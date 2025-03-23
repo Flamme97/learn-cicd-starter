@@ -33,4 +33,5 @@ jobs:
         run: gcloud info
 
       - name: Build and push Docker image
-        run: gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
+        run: |
+          gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest .
