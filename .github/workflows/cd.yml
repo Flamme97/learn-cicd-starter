@@ -10,7 +10,7 @@ jobs:
 
     permissions:
       contents: 'read'
-      id-token: 'write' # Required for Workload Identity Federation
+      id-token: 'write'
 
     steps:
       - name: Check out code
@@ -21,7 +21,7 @@ jobs:
         uses: 'google-github-actions/auth@v2'
         with:
           workload_identity_provider: 'projects/617705972231/locations/global/workloadIdentityPools/my-pool'
-          service_account: 'cloud-run-deployer@nth-hybrid-454618-g8.iam.gserviceaccount' 
+          service_account: 'cloud-run-deployer@nth-hybrid-454618-g8.iam.gserviceaccount'
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2.1.4
@@ -43,4 +43,4 @@ jobs:
         run: |
           gcloud auth configure-docker europe-west10-docker.pkg.dev
           docker tag flamme97/notely:latest europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
-          docker push europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
+          docker push europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest         docker push europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
