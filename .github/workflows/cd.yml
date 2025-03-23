@@ -1,12 +1,17 @@
-name: cd
+name: Deploy to Google Cloud
 on:
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  Deploy:
+  deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - name: Check out code
@@ -14,10 +19,9 @@ jobs:
 
       - name: Authenticate to Google Cloud
         id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+        uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/617705972231/locations/global/workloadIdentityPools/my-pool'
-          service_account: 'cloud-run-deployer@nth-hybrid-454618-g8.iam.gserviceaccount'
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2.1.4
@@ -27,15 +31,15 @@ jobs:
       - name: Verify gcloud authentication
         run: gcloud info
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.0" 
+
       - name: Build App
         run: scripts/buildprod.sh
 
-      - name: Build Docker image
+      - name: Submit build to Google Cloud Build
         run: |
-          docker build -t flamme97/notely:latest .
+          gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest .
 
-      - name: Deploy to Artifact Registry
-        run: |
-          gcloud auth configure-docker europe-west10-docker.pkg.dev
-          docker tag flamme97/notely:latest europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
-          docker push europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
