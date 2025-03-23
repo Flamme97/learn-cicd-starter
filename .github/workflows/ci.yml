@@ -21,6 +21,8 @@ jobs:
       - name: Print Go Version
         run: go test ./... -cover 
 
-      - name: Style
+  style:
+      steps:
+        name: Style
         run: test -z $(go fmt ./...)
 
