@@ -34,3 +34,6 @@ jobs:
 
       - name: Build and push Docker image via Cloud Build
         run: gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
+      
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy notely --image europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest --region europe-west10 --allow-unauthenticated --project 51e1308a2577e --max-instances=4
