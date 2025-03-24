@@ -29,9 +29,8 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Use gcloud CLI
-        run: gcloud info
+      - name: Debug gcloud authentication
+        run: gcloud auth list --filter=status:ACTIVE --format="value(account)"
 
-      - name: Build and push Docker image
-        run: |
-          gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest .
+      - name: Build and push Docker image via Cloud Build
+        run: gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest
