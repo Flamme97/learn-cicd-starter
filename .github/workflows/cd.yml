@@ -12,28 +12,37 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-
+       
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.23.0'
-
+       
       - name: Build app
         run: ./scripts/buildprod.sh
-
+       
       - id: auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
-
+        
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-
+        
       - name: Debug gcloud authentication
         run: gcloud auth list --filter=status:ACTIVE --format="value(account)"
-
+        
       - name: Build and push Docker image via Cloud Build
         run: gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest .
+        
+        env:
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        
+      - name: Install Goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+        
+      - name: Migrate Up
+        run: ./scripts/migrateup.sh
       
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely  --image europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest --region europe-west10 --allow-unauthenticated --project nth-hybrid-454618-g8 --max-instances=4
