@@ -35,7 +35,7 @@ jobs:
       - name: Build and push Docker image via Cloud Build
         run: gcloud builds submit --tag europe-west10-docker.pkg.dev/nth-hybrid-454618-g8/notely-ar-repo/notely:latest .
         
-        name: Deploy to prod
+      - name: Deploy to prod
         env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: ./scripts/migrateup.sh
